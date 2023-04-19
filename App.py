@@ -4,6 +4,7 @@ from tkinter import ttk
 root = tk.Tk()
 
 root.title("Formulaire Titanic")
+root.geometry("1000x800")
 
 def on_entry_click(event):
     if input_cabin.get() == "Ex: A-Z 0-999":
@@ -129,6 +130,18 @@ input_embarked.pack()
 # Ajout d'un bouton pour valider le formulaire
 bouton_valider = tk.Button(root, text="Valider", command=valider)
 bouton_valider.pack()
+
+separator = ttk.Separator(root, orient='horizontal')
+separator.pack(fill='x')
+
+label_metrics = tk.Label(root, text="Métriques d'évaluation : ")
+label_metrics.pack()
+
+separator = ttk.Separator(root, orient='horizontal')
+separator.pack(fill='x')
+
+label_results = tk.Label(root, text="Résultat : ")
+label_results.pack()
 
 # Lancement de la boucle principale de la fenêtre
 root.mainloop()
