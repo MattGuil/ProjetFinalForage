@@ -1,10 +1,11 @@
 import tkinter as tk
 from tkinter import ttk
 import csv
-import pandas as pd
 
 PAD_X = 10
 PAD_Y = 10
+P_CLASSES = {"1ère classe": 1, "2ème classe": 2, "3ème classe": 3}
+BOARDING_CITIES = {"Cherbourg": 'C', "Queenstown": 'Q', "Southampton": 'S'}
 
 # Création de la frame principale
 root = tk.Tk()
@@ -17,13 +18,13 @@ form_frame = tk.Frame(root)
 def valider():
     lastname = input_lastname.get()
     firstname = input_firstname.get()
-    pclass = input_pclass.get()
+    pclass = P_CLASSES[input_pclass.get()]
     sex = input_sex.get()
     age = input_age.get()
     sibsp = input_sibsp.get()
     parch = input_parch.get()
     fare = input_fare.get()
-    embarked = input_embarked.get()
+    embarked = BOARDING_CITIES[input_embarked.get()]
 
     # print("Identité : ", lastname + " " + firstname)
     # print("Classe :", pclass)
@@ -38,11 +39,21 @@ def valider():
 
     with open('passenger.csv', 'w', newline='') as file:
         writer = csv.writer(file, delimiter=';')
-        writer.writerow(['PClass', 'Sex', 'Age', 'SibSp', 'Parch', 'Fare', 'Embarked'])
-        writer.writerow([data['pclass'], data['sex'], data['age'], data['sibsp'], data['parch'], data['fare'], data['embarked']])
+        writer.writerow(['PClass', 'Sex', 'Age', 'SibSp', 'Parch', 'Fare', 'C', 'Q', 'S'])
+        writer.writerow([
+            data['pclass'],
+            data['sex'],
+            data['age'],
+            data['sibsp'],
+            data['parch'],
+            data['fare'],
+            1 if data['embarked'] == 'C' else 0,
+            1 if data['embarked'] == 'Q' else 0,
+            1 if data['embarked'] == 'S' else 0
+        ])
 
-    passenger = pd.read_csv('passenger.csv')
-    print(passenger.head())
+    # passenger = pd.read_csv('passenger.csv')
+    # print(passenger.head())
 
 # Ajouter un grand titre
 title_label = tk.Label(root, text="Auriez-vous survécu sur le Titanic ?", font=("Times", 24, "bold"))
@@ -68,8 +79,8 @@ input_lastname.grid(row=1, column=1, sticky="W")
 label_pclass = tk.Label(form_frame, text="Classe : ")
 label_pclass.grid(row=2, column=0, pady=PAD_Y, sticky="E")
 
-# Ajout d'une liste déroulante pour la classe de billets
-input_pclass = ttk.Combobox(form_frame, values=["1er classe", "2ème classe", "3ème classe"])
+# Création de la combobox
+input_pclass = ttk.Combobox(form_frame, values=list(P_CLASSES.keys()))
 input_pclass.grid(row=2, column=1, sticky="W")
 
 # Ajout d'un label pour le champ "Sex"
@@ -79,9 +90,9 @@ label_sex.grid(row=3, column=0, pady=PAD_Y, sticky="E")
 # Ajout de boutons radio pour le genre du passager
 input_sex = tk.StringVar()
 input_sex.set("Homme")
-bouton_homme = tk.Radiobutton(form_frame, text="Homme", variable=input_sex, value="Homme")
+bouton_homme = tk.Radiobutton(form_frame, text="Homme", variable=input_sex, value=1)
 bouton_homme.grid(row=3, column=1)
-bouton_femme = tk.Radiobutton(form_frame, text="Femme", variable=input_sex, value="Femme")
+bouton_femme = tk.Radiobutton(form_frame, text="Femme", variable=input_sex, value=0)
 bouton_femme.grid(row=3, column=2)
 
 # Ajout d'un label pour le champ "Age"
@@ -121,7 +132,7 @@ label_embarked = tk.Label(form_frame, text="Port d'embarquement : ")
 label_embarked.grid(row=8, column=0, pady=PAD_Y, sticky="E")
 
 # Ajout d'une liste déroulante pour la ville d'embarquement
-input_embarked = ttk.Combobox(form_frame, values=["Cherbourg", "Queenstown", "Southampton"])
+input_embarked = ttk.Combobox(form_frame, values=list(BOARDING_CITIES.keys()))
 input_embarked.grid(row=8, column=1, sticky="W")
 
 form_frame.pack(pady=PAD_Y*2)
