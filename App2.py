@@ -42,7 +42,6 @@ reg_result_frame = tk.Frame(result_frame)
 def init():
     data = pd.read_csv('Titanic-Dataset.csv')
     df = data.copy()
-    df = data.copy()
 
     df.drop(["Cabin", "Name", "Ticket"], axis=1, inplace=True)
 
@@ -240,6 +239,11 @@ def valider():
     y_pred3f = np.where(y_pred3 < 0.5, 0, 1)
     print(str(y_pred3f))
 
+    if int(y_pred1[0]) + int(y_pred2[0]) + int(y_pred3f[0]) >= 2:
+        label_final_result.config(text="Le passager aurait survécu")
+    else:
+        label_final_result.config(text="Le passager serait mort")
+
     label_dt_metrics.config(text=f"Taux d'accuracy : {accuracy_score(y_test, pred1)} \n Taux de précision : " \
                       f"{precision_score(y_test, pred1)}\n Taux de recall : {recall_score(y_test, pred1)}\n F1-score : " \
                       f"{f1_score(y_test, pred1)}")
@@ -382,9 +386,6 @@ title_knn_metrics.grid(row=0, column=2)
 label_knn_metrics = tk.Label(metrics_frame, text=TEXT_KNN_METRICS)
 label_knn_metrics.grid(row=1, column=2)
 
-label_knn_metrics = tk.Label(metrics_frame, text="")
-label_knn_metrics.grid(row=2, column=2)
-
 metrics_separator_2 = ttk.Separator(metrics_frame, orient='vertical')
 metrics_separator_2.grid(row=0, column=3)
 
@@ -413,6 +414,9 @@ result_separator_1.grid(row=0, column=1)
 
 label_knn_result = tk.Label(result_frame, text=TEXT_KNN_RESULT)
 label_knn_result.grid(row=0, column=2)
+
+label_final_result = tk.Label(result_frame, text=TEXT_KNN_RESULT)
+label_final_result.grid(row=1, column=2, pady=(15, 0))
 
 result_separator_2 = ttk.Separator(result_frame, orient='vertical')
 result_separator_2.grid(row=0, column=3)
