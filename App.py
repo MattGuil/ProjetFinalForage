@@ -2,28 +2,26 @@ import tkinter as tk
 from tkinter import ttk
 import pandas as pd
 import numpy as np
-import csv
 
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
-from sklearn.preprocessing import OneHotEncoder
-
-TEXT_DT_METRICS = "TEXT DT METRICS"
-TEXT_KNN_METRICS = "TEXT KNN METRICS"
-TEXT_REG_METRICS = "TEXT REG METRICS"
-
-TEXT_DT_RESULT = "TEXT DT RESULT"
-TEXT_KNN_RESULT = "TEXT KNN RESULT"
-TEXT_REG_RESULT = "TEXT REG RESULT"
 
 PAD_X = 10
-PAD_Y = 10
+PAD_Y = 5
 P_CLASSES = {"1ère classe": 1, "2ème classe": 2, "3ème classe": 3}
 BOARDING_CITIES = {"Cherbourg": 'C', "Queenstown": 'Q', "Southampton": 'S'}
+
+TEXT_DT_METRICS = "..."
+TEXT_KNN_METRICS = "..."
+TEXT_REG_METRICS = "..."
+
+TEXT_DT_RESULT = "..."
+TEXT_KNN_RESULT = "..."
+TEXT_REG_RESULT = "..."
 
 # Création de la frame principale
 root = tk.Tk()
 root.title("Formulaire Titanic")
-root.geometry("1000x800")
+root.geometry("1920x1080")
 
 # Création de la frame contenant formulaire
 form_frame = tk.Frame(root)
@@ -186,10 +184,6 @@ def valider():
     y_pred3f = np.where(y_pred3 < 0.5, 0, 1)
     print(str(y_pred3f))
 
-    global TEXT_DT_METRICS
-    global TEXT_KNN_METRICS
-    global TEXT_REG_METRICS
-
     label_dt_metrics.config(text=f"Taux d'accuracy : {accuracy_score(y_test, pred1)} \n Taux de précision : " \
                       f"{precision_score(y_test, pred1)}\n Taux de recall : {recall_score(y_test, pred1)}\n F1-score : " \
                       f"{f1_score(y_test, pred1)}")
@@ -202,14 +196,16 @@ def valider():
                       f"{precision_score(y_test, pred3)}\n Taux de recall : {recall_score(y_test, pred3)}\n F1-score : " \
                       f"{f1_score(y_test, pred3)}")
 
-    label_dt_result.config(text=f"{y_pred1}")
-    label_knn_result.config(text=f"{y_pred2}")
-    label_reg_result.config(text=f"{y_pred3f}")
-
+    result = "survivre" if y_pred1 == 1 else "mourir"
+    label_dt_result.config(text=f"D'après le DECISION TREE CLASSIFIER,\n{firstname} {lastname} devrait {result} (y_pred = {y_pred1})")
+    result = "survivre" if y_pred2 == 1 else "mourir"
+    label_knn_result.config(text=f"D'après le K NEIGHBORS CLASSIFIER,\n{firstname} {lastname} devrait {result} (y_pred = {y_pred2})")
+    result = "survivre" if y_pred3f == 1 else "mourir"
+    label_reg_result.config(text=f"D'après la LINEAR REGRESSION,\n{firstname} {lastname} devrait {result} (y_pred = {y_pred3f})")
 
 # -------------- H1 TITLE ---------------
 
-title_label = tk.Label(root, text="Auriez-vous survécu sur le Titanic ?", font=("Times", 24, "bold"))
+title_label = tk.Label(root, text="Créez votre passager, et découvrez si il aurait survécu au naufrage du Titanic ?", font=("Times", 24, "bold"))
 title_label.pack(pady=PAD_Y)
 
 # -------------- FORM FRAME ---------------
@@ -220,6 +216,7 @@ label_firstname.grid(row=0, column=0, pady=PAD_Y, sticky="E")
 
 # INPUT PRENOM
 input_firstname = tk.Entry(form_frame)
+input_firstname.insert(0, "Denis")
 input_firstname.grid(row=0, column=1, sticky="W")
 
 # LABEL NOM
@@ -228,6 +225,7 @@ label_lastname.grid(row=1, column=0, pady=PAD_Y, sticky="E")
 
 # INPUT NOM
 input_lastname = tk.Entry(form_frame)
+input_lastname.insert(0, "Brognard")
 input_lastname.grid(row=1, column=1, sticky="W")
 
 # LABEL CLASSE
@@ -236,6 +234,7 @@ label_pclass.grid(row=2, column=0, pady=PAD_Y, sticky="E")
 
 # INPUT CLASSE
 input_pclass = ttk.Combobox(form_frame, values=list(P_CLASSES.keys()))
+input_pclass.current(1)
 input_pclass.grid(row=2, column=1, sticky="W")
 
 # LABEL GENRE
@@ -249,6 +248,7 @@ bouton_homme = tk.Radiobutton(form_frame, text="Homme", variable=input_sex, valu
 bouton_homme.grid(row=3, column=1)
 bouton_femme = tk.Radiobutton(form_frame, text="Femme", variable=input_sex, value=0)
 bouton_femme.grid(row=3, column=2)
+bouton_femme.select()
 
 # LABEL AGE
 label_age = tk.Label(form_frame, text="Age : ")
@@ -256,6 +256,7 @@ label_age.grid(row=4, column=0, pady=PAD_Y, sticky="E")
 
 # INPUT AGE
 input_age = tk.Entry(form_frame)
+input_age.insert(0, '25')
 input_age.grid(row=4, column=1, sticky="W")
 
 # LABEL SIBSP
@@ -264,6 +265,7 @@ label_sibsp.grid(row=5, column=0, pady=PAD_Y, sticky="E")
 
 # INPUT SIBSP
 input_sibsp = tk.Scale(form_frame, from_=0, to=10, orient="horizontal")
+input_sibsp.set(2)
 input_sibsp.grid(row=5, column=1, sticky="W")
 
 # LABEL PARCH
@@ -272,6 +274,7 @@ label_parch.grid(row=6, column=0, pady=PAD_Y, sticky="E")
 
 # INPUT PARCH
 input_parch = tk.Scale(form_frame, from_=0, to=10, orient="horizontal")
+input_parch.set(1)
 input_parch.grid(row=6, column=1, sticky="W")
 
 # LABEL TARIF
@@ -280,6 +283,7 @@ label_fare.grid(row=7, column=0, pady=PAD_Y, sticky="E")
 
 # INPUT TARIF
 input_fare = tk.Entry(form_frame)
+input_fare.insert(0, '10')
 input_fare.grid(row=7, column=1, sticky="W")
 
 # LABEL EMBARKED
@@ -288,13 +292,14 @@ label_embarked.grid(row=8, column=0, pady=PAD_Y, sticky="E")
 
 # INPUT EMBARKED
 input_embarked = ttk.Combobox(form_frame, values=list(BOARDING_CITIES.keys()))
+input_embarked.current(1)
 input_embarked.grid(row=8, column=1, sticky="W")
 
 form_frame.pack(pady=PAD_Y*2)
 
 # -------------- VALIDATION BUTTON ---------------
 
-bouton_valider = tk.Button(root, text="Valider", command=valider)
+bouton_valider = tk.Button(root, text="C'EST PARTI !", command=valider)
 bouton_valider.pack(pady=PAD_Y)
 
 
@@ -306,17 +311,17 @@ root_separator_1.pack(fill='x', pady=PAD_Y)
 label_metrics = tk.Label(root, text="Métriques d'évaluation : ")
 label_metrics.pack(padx=(PAD_X, 0), pady=PAD_Y, anchor='w')
 
-title_dt_metrics = tk.Label(metrics_frame, text="DECISION TREE CLASSIFIER")
-title_dt_metrics.grid(row=0, column=0, padx=(0, PAD_X*5))
+title_dt_metrics = tk.Label(metrics_frame, text="DECISION TREE CLASSIFIER", font=("TkDefaultFont", 10, "bold"), anchor='center')
+title_dt_metrics.grid(row=0, column=0)
 
 label_dt_metrics = tk.Label(metrics_frame, text=TEXT_DT_METRICS)
-label_dt_metrics.grid(row=1, column=0, padx=(0, PAD_X*5))
+label_dt_metrics.grid(row=1, column=0, padx=(0, PAD_X*10))
 
 metrics_separator_1 = ttk.Separator(metrics_frame, orient='vertical')
 metrics_separator_1.grid(row=0, column=1)
 
-title_knn_metrics = tk.Label(metrics_frame, text="K NEIGHBORS CLASSIFIER")
-title_knn_metrics.grid(row=0, column=2, padx=(0, PAD_X*5))
+title_knn_metrics = tk.Label(metrics_frame, text="K NEIGHBORS CLASSIFIER", font=("TkDefaultFont", 10, "bold"), anchor='center')
+title_knn_metrics.grid(row=0, column=2)
 
 label_knn_metrics = tk.Label(metrics_frame, text=TEXT_KNN_METRICS)
 label_knn_metrics.grid(row=1, column=2)
@@ -324,11 +329,11 @@ label_knn_metrics.grid(row=1, column=2)
 metrics_separator_2 = ttk.Separator(metrics_frame, orient='vertical')
 metrics_separator_2.grid(row=0, column=3)
 
-title_reg_metrics = tk.Label(metrics_frame, text="LINEAR REGRETION")
-title_reg_metrics.grid(row=0, column=4, padx=(0, PAD_X*5))
+title_reg_metrics = tk.Label(metrics_frame, text="LINEAR REGRESSION", font=("TkDefaultFont", 10, "bold"), anchor='center')
+title_reg_metrics.grid(row=0, column=4)
 
 label_reg_metrics = tk.Label(metrics_frame, text=TEXT_REG_METRICS)
-label_reg_metrics.grid(row=1, column=4, padx=(PAD_X*5, 0))
+label_reg_metrics.grid(row=1, column=4, padx=(PAD_X*10, 0))
 
 metrics_frame.pack(pady=PAD_Y*2)
 
@@ -357,6 +362,16 @@ label_reg_result = tk.Label(result_frame, text=TEXT_REG_RESULT)
 label_reg_result.grid(row=0, column=40, padx=(PAD_X*5, 0))
 
 result_frame.pack(pady=PAD_Y*2)
+
+for child in metrics_frame.winfo_children():
+        if isinstance(child, tk.Label):
+            child.config(font=(child['font'], 12))
+
+for child in result_frame.winfo_children():
+        if isinstance(child, tk.Label):
+            current_font = child['font']
+            new_font = (current_font[0], 14) # Remplacer 16 par la taille de police souhaitée
+            child.config(font=new_font)
 
 # Lancement de la boucle principale de la fenêtre
 root.mainloop()
